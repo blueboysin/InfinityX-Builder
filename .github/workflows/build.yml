@@ -1,0 +1,39 @@
+name: Build InfinityX 3.9 (Poco F4)
+on:
+  workflow_dispatch:
+
+  jobs:
+    build:
+        runs-on: ubuntu-22.04
+            steps:
+                  - name: Free Up Disk Space
+                          uses: jlumbroso/free-disk-space@main
+                                  with:
+                                            tool-cache: true
+                                                      android: true
+                                                                dotnet: true
+                                                                          haskell: true
+
+                                                                                - name: Setup Git Identity
+                                                                                        run: |
+                                                                                                  git config --global user.email "shailendra@example.com"
+                                                                                                            git config --global user.name "ShailendraYadav"
+                                                                                                            
+                                                                                                                  - name: Sync InfinityX Source
+                                                                                                                          run: |
+                                                                                                                                    mkdir work && cd work
+                                                                                                                                              repo init -u https://github.com/ProjectInfinity-X/manifest.git -b 16 --depth=1
+                                                                                                                                                        repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
+                                                                                                                                                        
+                                                                                                                                                              - name: Clone Your Fixed Device Tree
+                                                                                                                                                                      run: |
+                                                                                                                                                                                cd work
+                                                                                                                                                                                          git clone https://github.com/${{ github.repository_owner }}/android_device_xiaomi_munch -b ProjectInfinity-X-16 device/xiaomi/munch
+                                                                                                                                                                                          
+                                                                                                                                                                                                - name: Build the ROM (mka bacon)
+                                                                                                                                                                                                        run: |
+                                                                                                                                                                                                                  cd work
+                                                                                                                                                                                                                            . build/envsetup.sh
+                                                                                                                                                                                                                                      lunch infinity_munch-userdebug
+                                                                                                                                                                                                                                                mka bacon -j$(nproc --all)
+                                                                                                                                                                                                                                                
