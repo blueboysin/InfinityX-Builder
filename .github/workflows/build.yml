@@ -30,11 +30,11 @@ jobs:
       - name: Clone Your Fixed Repos
         run: |
           cd work
-          # Clone Device Tree (With your Torch/Battery fixes)
+          # Device Tree (Your Torch/Battery fixes)
           git clone https://github.com/${{ github.repository_owner }}/android_device_xiaomi_munch -b ProjectInfinity-X-16 device/xiaomi/munch
-          # Clone Vendor Tree (Project-SenX)
+          # Vendor Tree (Project-SenX)
           git clone https://github.com/${{ github.repository_owner }}/android_vendor_xiaomi_munch -b lineage-23.2 vendor/xiaomi/munch
-          # Clone Kernel Tree (AnkitSavani111)
+          # Kernel Tree (AnkitSavani111)
           git clone https://github.com/${{ github.repository_owner }}/android_kernel_xiaomi_sm8250 -b lineage-23.2 kernel/xiaomi/sm8250
 
       - name: Build ROM
