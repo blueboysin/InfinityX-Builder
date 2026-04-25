@@ -6,38 +6,37 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Free Disk Space
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
           android: true
-          dotnet: true
-          haskell: true
 
-      - name: Setup Build Environment
+      - name: Install Repo
         run: |
-          sudo apt update
-          sudo apt install -y git-core gnupg flex bison build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip bc repo
-          git config --global user.email "shailendra@example.com"
-          git config --global user.name "ShailendraYadav"
-- name: Sync InfinityX Source
+          mkdir ~/bin
+          curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+          chmod a+x ~/bin/repo
+          sudo ln -sf ~/bin/repo /usr/bin/repo
+
+      - name: Sync Source
         run: |
           mkdir work && cd work
-          # The --no-repo-verify flag fixes the error in your screenshot
+          git config --global user.email "shailendra@example.com"
+          git config --global user.name "shailendrayadav"
           repo init -u https://github.com/ProjectInfinity-X/manifest.git -b 16 --depth=1 --no-repo-verify
-          # Optimized sync for faster speed and fewer errors
-          repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j$(nproc --all)
+          repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
 
-      - name: Clone Your Fixed Repos
+      - name: Clone Munch Trees
         run: |
           cd work
-          # Using 'rm -rf' ensures no old folders block the new clones
-          rm -rf device/xiaomi/munch vendor/xiaomi/munch kernel/xiaomi/sm8250
-          
           git clone https://github.com/${{ github.repository_owner }}/android_device_xiaomi_munch -b ProjectInfinity-X-16 device/xiaomi/munch
           git clone https://github.com/${{ github.repository_owner }}/android_vendor_xiaomi_munch -b lineage-23.2 vendor/xiaomi/munch
           git clone https://github.com/${{ github.repository_owner }}/android_kernel_xiaomi_sm8250 -b lineage-23.2 kernel/xiaomi/sm8250
-     
+
       - name: Build ROM
         run: |
           cd work
