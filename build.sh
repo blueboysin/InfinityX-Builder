@@ -15,8 +15,8 @@ repo init -u https://github.com/projectinfinity-x/manifest.git -b 16 --git-lfs -
 mkdir -p .repo/local_manifests
 cp /tmp/munch.xml .repo/local_manifests/munch.xml
 
-# Download everything cleanly
-repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --depth=1
+# Download everything cleanly (Corrected command below)
+repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
 
 # Set up terminal compilation commands
 . build/envsetup.sh
