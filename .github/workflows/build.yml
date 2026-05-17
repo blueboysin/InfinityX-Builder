@@ -1,41 +1,30 @@
-name: Build InfinityX 3.9
+name: Compile Infinity-X 3.10 Android 16
+
 on:
-  workflow_dispatch:
+  workflow_dispatch: # This adds the manual "Run workflow" button
 
 jobs:
-  build:
+  build_job:
     runs-on: ubuntu-22.04
+
     steps:
-      - name: Maximize Build Space
-        run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/share/boost /usr/local/share/powershell /usr/local/lib/node_modules
+    - name: Get source from repository
+      uses: actions/checkout@v4
 
-      - name: Setup Repo
-        run: |
-          mkdir ~/bin
-          curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
-          chmod a+x ~/bin/repo
-          sudo ln -sf ~/bin/repo /usr/bin/repo
+    - name: Clean up the server space
+      run: |
+        sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo apt-get update && sudo apt-get install -y curl
 
-      - name: Sync Source (Persistent)
-        run: |
-          mkdir work && cd work
-          git config --global user.email "shailendra@example.com"
-          git config --global user.name "shailendrayadav"
-          repo init -u https://github.com/ProjectInfinity-X/manifest.git -b 16 --depth=1 --no-repo-verify
-          # This loop will retry the sync if it fails due to network issues
-          repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags || repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
+    - name: Run Build Core Process
+      run: |
+        # This copies your munch.xml from your repo to the build folder safely
+        cp munch.xml /tmp/munch.xml
+        chmod +x build.sh
+        bash build.sh
 
-      - name: Clone Munch Trees
-        run: |
-          cd work
-          git clone https://github.com/${{ github.repository_owner }}/android_device_xiaomi_munch -b ProjectInfinity-X-16 device/xiaomi/munch
-          git clone https://github.com/${{ github.repository_owner }}/android_vendor_xiaomi_munch -b lineage-23.2 vendor/xiaomi/munch
-          git clone https://github.com/${{ github.repository_owner }}/android_kernel_xiaomi_sm8250 -b lineage-23.2 kernel/xiaomi/sm8250
-
-      - name: Build ROM
-        run: |
-          cd work
-          . build/envsetup.sh
-          lunch infinity_munch-userdebug
-          mka bacon -j$(nproc --all)
+    - name: Save My Finished ROM File
+      uses: actions/upload-artifact@v4
+      with:
+        name: POCO-F4-Infinity-16-Zip
+        path: ~/android/out/target/product/munch/Project_Infinity-X-*.zip
