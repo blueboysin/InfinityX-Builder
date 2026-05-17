@@ -1,6 +1,7 @@
+
 #!/bin/bash
 
-# Prepare clean building folders
+# Prepare clean building folders directly in the root to save partition space
 mkdir -p ~/android
 cd ~/android
 
@@ -8,15 +9,15 @@ cd ~/android
 git config --global user.name "blueboysin"
 git config --global user.email "blueboysin@github.com"
 
-# Pull Project Infinity-X 3.10 Android 16 code base
+# Initialize Project Infinity-X 3.10 with depth limits
 repo init -u https://github.com/projectinfinity-x/manifest.git -b 16 --git-lfs --depth=1 --no-repo-verify
 
-# Copy your custom munch map into the main system
+# Copy your custom munch map into the local engine
 mkdir -p .repo/local_manifests
 cp /tmp/munch.xml .repo/local_manifests/munch.xml
 
-# Download everything cleanly (Corrected command below)
-repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
+# Super-slim down sync parameters (Extracts files without keeping git log histories)
+repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --current-branch
 
 # Set up terminal compilation commands
 . build/envsetup.sh
