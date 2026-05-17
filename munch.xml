@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+    <project name="blueboysin/android_device_xiaomi_munch" path="device/xiaomi/munch" remote="github" revision="16" />
+    <project name="blueboysin/android_device_xiaomi_sm8250-common" path="device/xiaomi_sm8250-common" remote="github" revision="16" />
+    <project name="blueboysin/android_kernel_xiaomi_sm8250" path="kernel/xiaomi/sm8250" remote="github" revision="16" />
+    <project name="blueboysin/android_vendor_xiaomi_munch" path="vendor/xiaomi/munch" remote="github" revision="16" />
+    
+    <project name="projectinfinity-x/android_hardware_xiaomi" path="hardware/xiaomi" remote="github" revision="16" />
+</manifest>
