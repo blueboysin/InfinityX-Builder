@@ -16,9 +16,21 @@ jobs:
         sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
         sudo apt-get update && sudo apt-get install -y curl
 
+    - name: Install Android Build Dependencies and Repo Tool
+      run: |
+        # Install fundamental compilation packages
+        sudo apt-get update
+        sudo apt-get install -y bc bison build-essential ccache curl flex g++-multilib gcc-multilib git git-lfs gnupg gperf lib32readline-dev lib32z1-dev libelf-dev liblz4-tool libssl-dev libxml2 libxml2-utils lzma x11proto-core-dev xsltproc unzip rsync schedtool squashfs-tools zip zlib1g-dev python3
+        
+        # Download and configure Google's Repo tool globally
+        mkdir -p ~/bin
+        curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+        chmod a+x ~/bin/repo
+        sudo ln -sf ~/bin/repo /usr/bin/repo
+
     - name: Run Build Core Process
       run: |
-        # This copies your munch.xml from your repo to the build folder safely
+        # Copies your munch.xml from your repo to the build folder safely
         cp munch.xml /tmp/munch.xml
         chmod +x build.sh
         bash build.sh
